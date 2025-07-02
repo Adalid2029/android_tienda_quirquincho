@@ -1,0 +1,40 @@
+<resources>
+    <string name="app_name">Tienda Quirquincho</string>
+
+    <!-- Login -->
+    <string name="iniciar_sesion">Iniciar sesión</string>
+    <string name="nombre_usuario">Nombre de usuario</string>
+    <string name="contrasena">Contraseña</string>
+    <string name="hint_usuario">Ingresa tu nombre de usuario</string>
+    <string name="hint_contrasena">Ingresa tu contraseña</string>
+    <string name="recuperar_contrasena">Recuperar Contraseña</string>
+
+    <!-- Lista de Productos -->
+    <string name="tienda_quirquincho">Tienda Quirquincho</string>
+    <string name="buscar_productos">Buscar productos</string>
+    <string name="anadir_nuevo_producto">Añadir nuevo producto</string>
+    <string name="comprar">Comprar</string>
+    <string name="categoria">Categoría:</string>
+    <string name="precio">Precio:</string>
+    <string name="carrito_compras">Carrito de compras</string>
+
+    <!-- Mensajes -->
+    <string name="error_usuario_vacio">Ingresa tu nombre de usuario</string>
+    <string name="error_contrasena_vacia">Ingresa tu contraseña</string>
+    <string name="login_exitoso">¡Bienvenido a Tienda Quirquincho!</string>
+    <string name="login_error">Usuario o contraseña incorrectos</string>
+    <string name="funcionalidad_desarrollo">Funcionalidad en desarrollo</string>
+    <string name="producto_clickeado">Producto:</string>
+    <string name="agregado_carrito">Agregado al carrito:</string>
+
+    <!-- Categorías -->
+    <string name="categoria_abarrotes">Abarrotes</string>
+    <string name="categoria_lacteos">Lácteos y derivados</string>
+    <string name="categoria_bebidas">Bebidas</string>
+    <string name="categoria_panaderia">Panadería</string>
+    <string name="categoria_snacks">Snacks y golosinas</string>
+    <string name="categoria_limpieza">Limpieza del hogar</string>
+    <string name="categoria_higiene">Higiene personal</string>
+    <string name="categoria_verduras">Verduras, frutas, carnes, huevos</string>
+    <string name="categoria_varios">Otros / Varios</string>
+</resources>

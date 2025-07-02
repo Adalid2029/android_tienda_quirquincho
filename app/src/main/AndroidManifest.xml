@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Declaración XML estándar que especifica la versión de XML (1.0) y la codificación de caracteres (UTF-8) -->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!--
+    - <manifest>: Elemento raíz del archivo AndroidManifest.xml. Define la configuración principal de la aplicación Android
+    - xmlns:android: Declara el namespace (espacio de nombres) para atributos específicos de Android
+    - xmlns:tools: Declara el namespace para herramientas de desarrollo de Android Studio (usado para metadatos que no van en la app final)
+    -->
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@drawable/quirquincho_icon"
+        android:label="@string/app_name"
+        android:roundIcon="@drawable/quirquincho_icon"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.TiendaQuirquincho"
+        tools:targetApi="31">
+        <!--
+        <application>: Define las propiedades globales de la aplicación
+
+        android:allowBackup="true":
+        - Permite que Android haga copias de seguridad automáticas de los datos de la app
+        - Los usuarios pueden restaurar datos cuando reinstalan la app
+
+        android:dataExtractionRules="@xml/data_extraction_rules":
+        - Especifica reglas para la extracción de datos en Android 12+ (API 31+)
+        - Controla qué datos se incluyen en las copias de seguridad automáticas
+        - "@xml/" hace referencia a un archivo XML en la carpeta res/xml/
+
+        android:fullBackupContent="@xml/backup_rules":
+        - Define reglas específicas para el backup completo en versiones anteriores de Android
+        - Especifica qué archivos/carpetas incluir o excluir del backup
+
+        android:icon="@drawable/quirquincho_icon":
+        - Establece el ícono principal de la aplicación
+        - "@drawable/" hace referencia a un archivo de imagen en la carpeta res/drawable/
+        - "quirquincho" parece ser el nombre de la mascota/logo de la app
+
+        android:label="@string/app_name":
+        - Define el nombre visible de la aplicación
+        - "@string/" hace referencia a un texto definido en res/values/strings.xml
+        - Permite localización del nombre en diferentes idiomas
+
+        android:roundIcon="@drawable/quirquincho_icon":
+        - Ícono redondeado para launchers que soportan íconos adaptativos
+        - Se usa en dispositivos con Android 7.1+ (API 25+)
+
+        android:supportsRtl="true":
+        - RTL = Right-to-Left (derecha a izquierda)
+        - Habilita soporte para idiomas que se leen de derecha a izquierda (árabe, hebreo, etc.)
+        - Permite que la interfaz se adapte automáticamente a estos idiomas
+
+        android:theme="@style/Theme.TiendaQuirquincho":
+        - Establece el tema visual global de la aplicación
+        - "@style/" hace referencia a un estilo definido en res/values/styles.xml o themes.xml
+        - Controla colores, tipografías, y apariencia general de la app
+
+        tools:targetApi="31":
+        - Herramienta de desarrollo que indica que esta configuración apunta a Android 12 (API 31)
+        - No afecta la app final, solo ayuda a Android Studio con validaciones y advertencias
+        -->
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <!--
+            <activity>: Define una actividad (pantalla/ventana) de la aplicación
+
+            android:name=".MainActivity":
+            - Especifica la clase Java/Kotlin que implementa esta actividad
+            - El punto "." indica que está en el mismo package que se declara en el manifest
+            - MainActivity es típicamente la pantalla principal de la app
+
+            android:exported="true":
+            - Permite que otras aplicaciones o el sistema puedan iniciar esta actividad
+            - Necesario para actividades que tienen intent-filters
+            - "true" = visible externamente, "false" = solo accesible internamente
+            -->
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!--
+            <intent-filter>: Define qué tipos de intents (intenciones/acciones) puede manejar esta actividad
+
+            <action android:name="android.intent.action.MAIN" />:
+            - Declara que esta es la acción principal de la aplicación
+            - Es el punto de entrada principal cuando se inicia la app
+
+            <category android:name="android.intent.category.LAUNCHER" />:
+            - Indica que esta actividad debe aparecer en el launcher (menú de aplicaciones)
+            - Hace que la app sea visible e iniciable desde la pantalla de inicio del dispositivo
+
+            La combinación de MAIN + LAUNCHER hace que esta actividad sea:
+            1. El punto de entrada de la aplicación
+            2. Visible en la lista de aplicaciones instaladas
+            -->
+
+        </activity>
+    </application>
+</manifest>
