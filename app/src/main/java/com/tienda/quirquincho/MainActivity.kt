@@ -1,17 +1,16 @@
 // Define el paquete donde está esta clase, ayuda a organizar el código
 package com.tienda.quirquincho
 
-// Importa la clase Bundle que es un contenedor para pasar datos entre componentes Android
 import android.os.Bundle
-// Importa AppCompatActivity, la clase base para actividades con soporte moderno (compatibilidad)
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-// Importa NavHostFragment, fragmento contenedor para manejar la navegación entre pantallas
 import androidx.navigation.fragment.NavHostFragment
-// Importa función para configurar la ActionBar con el NavController (controlador de navegación)
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 // Declara la clase MainActivity que extiende AppCompatActivity
-// Esta clase es la actividad principal que se ejecuta al iniciar la app
+// Esta clase es la actividad principal que se ejecuta* al iniciar la app
 class MainActivity : AppCompatActivity() {
 
     // onCreate es el método que se ejecuta cuando la actividad se crea por primera vez
@@ -37,6 +36,29 @@ class MainActivity : AppCompatActivity() {
         // Configura la ActionBar (barra superior) para que funcione junto con el NavController
         // Esto habilita cosas como el botón "Atrás" o "Up" en la barra de navegación
         setupActionBarWithNavController(navController)
+
+
+
+        val bottomNavigation = findViewById<BottomNavigationView>(R.id.bottom_navigation)
+        bottomNavigation.setupWithNavController(navController)
+
+        // Controlar visibilidad del Bottom Navigation
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.loginFragment -> {
+                    // Ocultar bottom navigation en login
+                    bottomNavigation.visibility = View.GONE
+                    // Opcional: ocultar ActionBar también
+                    // supportActionBar?.hide()
+                }
+                else -> {
+                    // Mostrar bottom navigation en otras pantallas
+                    bottomNavigation.visibility = View.VISIBLE
+                    // Opcional: mostrar ActionBar también
+                    // supportActionBar?.show()
+                }
+            }
+        }
     }
 
     // Método que se llama cuando el usuario presiona el botón "Up" (flecha atrás) en la ActionBar

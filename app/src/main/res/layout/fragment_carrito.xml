@@ -8,14 +8,23 @@
     android:padding="24dp"
     tools:context=".carrito.CarritoFragment">
 
+    <!-- Ícono del carrito -->
+    <ImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:src="@drawable/ic_shopping_cart"
+        android:layout_marginBottom="24dp"
+        android:contentDescription="Carrito de compras" />
+
+    <!-- Mensaje principal -->
     <TextView
         android:id="@+id/tv_mensaje_carrito"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="🛒 Carrito de Compras"
+        android:text="Carrito de Compras\n\n¡Próximamente implementado!"
         android:textSize="18sp"
-        android:textStyle="bold"
+        android:textAlignment="center"
         android:gravity="center"
-        android:lineSpacingExtra="8dp" />
+        android:lineSpacingExtra="4dp" />
 
 </LinearLayout>

@@ -13,7 +13,7 @@
         tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_login_to_lista_productos"
-            app:destination="@id/listaProductosFragment"/>
+            app:destination="@id/listaProductosFragment" />
     </fragment>
 
     <!-- Fragment de Lista de Productos -->
@@ -21,7 +21,17 @@
         android:id="@+id/listaProductosFragment"
         android:name="com.tienda.quirquincho.productos.ListaProductosFragment"
         android:label="Lista de Productos"
-        tools:layout="@layout/fragment_lista_productos"/>
+        tools:layout="@layout/fragment_lista_productos">
+        <action
+            android:id="@+id/action_lista_productos_to_anadir_producto"
+            app:destination="@id/anadirProductoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/anadirProductoFragment"
+        android:name="com.tienda.quirquincho.productos.AnadirProductoFragment"
+        android:label="Añadir Producto"
+        tools:layout="@layout/fragment_anadir_producto" />
 
     <!-- Fragment de Carrito -->
     <fragment
@@ -36,4 +46,6 @@
         android:name="com.tienda.quirquincho.perfil.PerfilFragment"
         android:label="Perfil"
         tools:layout="@layout/fragment_perfil" />
+
+
 </navigation>

@@ -26,6 +26,9 @@ class LoginFragment : Fragment() {
     private lateinit var btnIniciarSesion: Button    // Botón para iniciar sesión
     private lateinit var tvRecuperarPassword: TextView // Texto para recuperar contraseña (link)
 
+
+
+
     // Método que crea la vista del fragmento
     // Se infla el layout XML que define la interfaz para este fragmento
     override fun onCreateView(

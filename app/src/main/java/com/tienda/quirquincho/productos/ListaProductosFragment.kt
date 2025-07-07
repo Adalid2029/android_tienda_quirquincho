@@ -99,6 +99,7 @@ class ListaProductosFragment : Fragment() {
         btnAnadirNuevoProducto.setOnClickListener {
             // TODO: Navegar a agregar producto
             Toast.makeText(requireContext(), "Añadir nuevo producto", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_lista_productos_to_anadir_producto)
         }
 
         // TODO: Configurar búsqueda en tiempo real
