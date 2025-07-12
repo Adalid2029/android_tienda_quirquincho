@@ -27,6 +27,33 @@
     <string name="producto_clickeado">Producto:</string>
     <string name="agregado_carrito">Agregado al carrito:</string>
 
+    <!-- Añadir Producto -->
+    <string name="anadir_producto">Añadir producto</string>
+    <string name="seleccionar_producto">Seleccionar producto</string>
+    <string name="nombre_del_producto">Nombre del producto</string>
+    <string name="nombre_hint">Nombre</string>
+    <string name="precio_hint">Precio</string>
+    <string name="cantidad">Cantidad</string>
+    <string name="cantidad_hint">Cantidad</string>
+    <string name="descripcion_del_producto">Descripción del producto</string>
+    <string name="descripcion_hint">Descripción detallada del producto</string>
+    <string name="anadir">Añadir</string>
+    <string name="disponible">Disponible</string>
+    <string name="no_disponible">No disponible</string>
+
+    <!-- Errores de Red -->
+    <string name="error_sin_internet">Sin conexión a internet</string>
+    <string name="error_timeout">Tiempo de espera agotado</string>
+    <string name="error_servidor">Error del servidor</string>
+    <string name="error_desconocido">Error inesperado</string>
+    <string name="error_credenciales">Credenciales incorrectas</string>
+    <string name="error_servicio_no_disponible">Servicio no disponible</string>
+
+    <!-- Bottom Navigation -->
+    <string name="nav_inicio">Inicio</string>
+    <string name="nav_carrito">Carrito</string>
+    <string name="nav_perfil">Perfil</string>
+
     <!-- Categorías -->
     <string name="categoria_abarrotes">Abarrotes</string>
     <string name="categoria_lacteos">Lácteos y derivados</string>
@@ -36,5 +63,7 @@
     <string name="categoria_limpieza">Limpieza del hogar</string>
     <string name="categoria_higiene">Higiene personal</string>
     <string name="categoria_verduras">Verduras, frutas, carnes, huevos</string>
-    <string name="categoria_varios">Otros / Varios</string>
+    <string name="categoria_cigarros">Cigarros y encendedores</string>
+    <string name="categoria_medicamentos">Medicamentos</string>
+    <string name="categoria_otros">Otros / Varios</string>
 </resources>

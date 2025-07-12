@@ -3,11 +3,14 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <!--
-    - <manifest>: Elemento raíz del archivo AndroidManifest.xml. Define la configuración principal de la aplicación Android
-    - xmlns:android: Declara el namespace (espacio de nombres) para atributos específicos de Android
-    - xmlns:tools: Declara el namespace para herramientas de desarrollo de Android Studio (usado para metadatos que no van en la app final)
-    -->
+    <!-- Permiso para acceso a internet -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Permiso para verificar estado de la red -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Permiso para wake lock (opcional, para operaciones en background) -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:allowBackup="true"
@@ -18,6 +21,7 @@
         android:roundIcon="@drawable/quirquincho_icon"
         android:supportsRtl="true"
         android:theme="@style/Theme.TiendaQuirquincho"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <!--
         <application>: Define las propiedades globales de la aplicación

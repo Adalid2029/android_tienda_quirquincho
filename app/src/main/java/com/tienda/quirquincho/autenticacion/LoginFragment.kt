@@ -1,7 +1,8 @@
-// Define el paquete donde está esta clase, útil para organizar el código
+// ========================================
+// autenticacion/LoginFragment.kt - ACTUALIZADO CON API REAL
+// ========================================
 package com.tienda.quirquincho.autenticacion
 
-// Importaciones necesarias para trabajar con vistas, fragmentos y widgets UI en Android
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,145 +12,312 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.tienda.quirquincho.R
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.tienda.quirquincho.R
+import com.tienda.quirquincho.data.almacenamiento.TokenManager
+import com.tienda.quirquincho.data.modelos.SolicitudLogin
+import com.tienda.quirquincho.data.red.RetrofitCliente
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 
-
-// Declaración de la clase LoginFragment, que extiende Fragment
-// Fragment es una porción modular de la interfaz que puede insertarse en una actividad
 class LoginFragment : Fragment() {
 
-    // Declaración de variables que apuntarán a los elementos UI del fragmento
-    // 'lateinit var' significa que se inicializan después (en onViewCreated), no en el constructor
-    private lateinit var etNombreUsuario: EditText   // Campo de texto para el nombre de usuario
-    private lateinit var etContrasena: EditText      // Campo de texto para la contraseña
-    private lateinit var btnIniciarSesion: Button    // Botón para iniciar sesión
-    private lateinit var tvRecuperarPassword: TextView // Texto para recuperar contraseña (link)
+    // Variables para los elementos de la UI
+    private lateinit var etNombreUsuario: EditText
+    private lateinit var etContrasena: EditText
+    private lateinit var btnIniciarSesion: Button
+    private lateinit var tvRecuperarPassword: TextView
 
+    // Manager para el token JWT
+    private lateinit var tokenManager: TokenManager
 
-
-
-    // Método que crea la vista del fragmento
-    // Se infla el layout XML que define la interfaz para este fragmento
     override fun onCreateView(
-        inflater: LayoutInflater,      // Objeto que transforma XML en objetos View
-        container: ViewGroup?,         // Contenedor padre donde se insertará la vista
-        savedInstanceState: Bundle?    // Estado previo guardado, si existe
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
-        // Devuelve la vista inflada de fragment_login.xml para ser mostrada
         return inflater.inflate(R.layout.fragment_login, container, false)
     }
 
-    // Método que se llama cuando la vista ya fue creada
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Inicializa las vistas para poder interactuar con ellas en código
+        // Inicializar token manager
+        tokenManager = TokenManager(requireContext())
+
+        // Inicializar vistas
         inicializarVistas(view)
 
-        // Configura los "listeners" para manejar eventos como clicks
+        // Configurar listeners
         configurarListeners()
+
+        // Verificar si ya está logueado
+        verificarSesionExistente()
     }
 
     /**
      * Inicializa todas las vistas del fragment usando findViewById
-     * findViewById busca el componente en la vista por su ID definido en XML
      */
     private fun inicializarVistas(view: View) {
-        etNombreUsuario = view.findViewById(R.id.et_nombre_usuario)   // EditText para usuario
-        etContrasena = view.findViewById(R.id.et_contrasena)          // EditText para contraseña
-        btnIniciarSesion = view.findViewById(R.id.btn_iniciar_sesion) // Botón de login
-        tvRecuperarPassword = view.findViewById(R.id.tv_recuperar_password) // Texto para recuperación
+        etNombreUsuario = view.findViewById(R.id.et_nombre_usuario)
+        etContrasena = view.findViewById(R.id.et_contrasena)
+        btnIniciarSesion = view.findViewById(R.id.btn_iniciar_sesion)
+        tvRecuperarPassword = view.findViewById(R.id.tv_recuperar_password)
     }
 
     /**
      * Configura los listeners de los elementos de la UI
-     * Un listener es un manejador de eventos, por ejemplo un click
      */
     private fun configurarListeners() {
-        // Cuando se presiona el botón de iniciar sesión, ejecuta iniciarSesion()
+        // Botón Iniciar Sesión
         btnIniciarSesion.setOnClickListener {
-            iniciarSesion()
+            iniciarSesionConApi()
         }
 
-        // Cuando se presiona el texto de recuperar contraseña, muestra un mensaje Toast
+        // Link Recuperar Contraseña
         tvRecuperarPassword.setOnClickListener {
             Toast.makeText(
-                requireContext(), // Contexto actual, necesario para mostrar Toast
-                getString(R.string.funcionalidad_desarrollo), // Mensaje en strings.xml
-                Toast.LENGTH_SHORT // Duración corta para el Toast
-            ).show()
-        }
-    }
-
-    /**
-     * Método que maneja el proceso de inicio de sesión
-     * Valida datos, simula verificación y muestra mensajes al usuario
-     */
-    private fun iniciarSesion() {
-        // Obtiene texto de los EditText y elimina espacios al inicio y final (trim)
-        val usuario = etNombreUsuario.text.toString().trim()
-        val contrasena = etContrasena.text.toString().trim()
-
-        // Valida que los campos no estén vacíos, si falla termina el método
-        if (!validarCampos(usuario, contrasena)) {
-            return
-        }
-
-        // Simula validación de credenciales (usuario y contraseña)
-        if (validarCredenciales(usuario, contrasena)) {
-            // Login exitoso: muestra un Toast con mensaje largo
-            Toast.makeText(
                 requireContext(),
-                getString(R.string.login_exitoso),
-                Toast.LENGTH_LONG
-            ).show()
-
-            // TODO: En el futuro, navegar a otra pantalla usando Navigation Component
-            findNavController().navigate(R.id.action_login_to_lista_productos)
-
-        } else {
-            // Login fallido: muestra un Toast con mensaje corto
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.login_error),
+                getString(R.string.funcionalidad_desarrollo),
                 Toast.LENGTH_SHORT
             ).show()
         }
     }
 
     /**
-     * Valida que los campos obligatorios estén llenos y muestra errores si no
-     * Devuelve true si todo está bien, false si hay campos vacíos
+     * Verifica si el usuario ya tiene una sesión activa
+     */
+    private fun verificarSesionExistente() {
+        lifecycleScope.launch {
+            tokenManager.estaLogueado().collect { estaLogueado ->
+                if (estaLogueado) {
+                    // Usuario ya está logueado, navegar directamente
+                    navegarAPrincipal()
+                }
+            }
+        }
+    }
+
+    /**
+     * Inicia sesión usando la API real
+     */
+    private fun iniciarSesionConApi() {
+        // Obtener datos de los campos
+        val usuario = etNombreUsuario.text.toString().trim()
+        val contrasena = etContrasena.text.toString().trim()
+
+        // Validar campos básicos
+        if (!validarCampos(usuario, contrasena)) {
+            return
+        }
+
+        // Mostrar estado de carga
+        cambiarEstadoCarga(true)
+
+        // Realizar llamada a la API
+        lifecycleScope.launch {
+            try {
+                // Crear solicitud de login
+                val solicitudLogin = SolicitudLogin(
+                    login = usuario,
+                    contrasena = contrasena
+                )
+
+                // Llamar a la API
+                val respuesta = RetrofitCliente.apiServicio.iniciarSesion(solicitudLogin)
+
+                // Procesar respuesta
+                if (respuesta.isSuccessful) {
+                    val cuerpoRespuesta = respuesta.body()
+                    if (cuerpoRespuesta != null && cuerpoRespuesta.esExitosa()) {
+                        // Login exitoso
+                        manejarLoginExitoso(cuerpoRespuesta)
+                    } else {
+                        // Error en la respuesta
+                        manejarErrorApi(cuerpoRespuesta)
+                    }
+                } else {
+                    // Error HTTP
+                    manejarErrorHttp(respuesta.code())
+                }
+
+            } catch (e: IOException) {
+                // Error de red
+                manejarErrorRed(e)
+            } catch (e: HttpException) {
+                // Error HTTP
+                manejarErrorHttp(e.code())
+            } catch (e: Exception) {
+                // Error desconocido
+                manejarErrorDesconocido(e)
+            } finally {
+                // Ocultar estado de carga
+                cambiarEstadoCarga(false)
+            }
+        }
+    }
+
+    /**
+     * Maneja el login exitoso
+     */
+    private suspend fun manejarLoginExitoso(respuesta: com.tienda.quirquincho.data.modelos.RespuestaApi<com.tienda.quirquincho.data.modelos.DatosLogin>) {
+        val datosLogin = respuesta.datos
+        if (datosLogin != null) {
+            // Guardar datos de sesión
+            tokenManager.guardarDatosSesion(
+                token = datosLogin.token,
+                usuarioId = datosLogin.usuario.id.toString(),
+                nombreUsuario = datosLogin.usuario.nombreUsuario,
+                email = datosLogin.usuario.email,
+                nombreCompleto = datosLogin.usuario.nombreCompleto,
+                expiraEn = datosLogin.expiraEn
+            )
+
+            // Mostrar mensaje de éxito
+            mostrarMensaje("¡Bienvenido ${datosLogin.usuario.nombreCompleto}!")
+
+            // Navegar a pantalla principal
+            navegarAPrincipal()
+        }
+    }
+
+    /**
+     * Maneja errores de la API
+     */
+    private fun manejarErrorApi(respuesta: com.tienda.quirquincho.data.modelos.RespuestaApi<com.tienda.quirquincho.data.modelos.DatosLogin>?) {
+        when {
+            respuesta == null -> {
+                mostrarMensaje("Error desconocido del servidor")
+            }
+            respuesta.tieneErrores() -> {
+                // Errores de validación
+                manejarErroresValidacion(respuesta)
+            }
+            else -> {
+                // Mensaje de error general
+                mostrarMensaje(respuesta.mensaje)
+            }
+        }
+    }
+
+    /**
+     * Maneja errores de validación específicos
+     */
+    private fun manejarErroresValidacion(respuesta: com.tienda.quirquincho.data.modelos.RespuestaApi<com.tienda.quirquincho.data.modelos.DatosLogin>) {
+        // Limpiar errores previos
+        etNombreUsuario.error = null
+        etContrasena.error = null
+
+        respuesta.errores?.let { errores ->
+            // Mostrar errores en campos específicos
+            errores["login"]?.let { error ->
+                etNombreUsuario.error = error
+            }
+            errores["password"]?.let { error ->
+                etContrasena.error = error
+            }
+
+            // Si no hay errores específicos, mostrar el primero
+            if (errores.isNotEmpty() && etNombreUsuario.error == null && etContrasena.error == null) {
+                mostrarMensaje(errores.values.first())
+            }
+        }
+
+        // También mostrar el mensaje general si existe
+        if (respuesta.mensaje.isNotEmpty()) {
+            mostrarMensaje(respuesta.mensaje)
+        }
+    }
+
+    /**
+     * Maneja errores HTTP
+     */
+    private fun manejarErrorHttp(codigoError: Int) {
+        val mensaje = when (codigoError) {
+            401 -> "Credenciales incorrectas"
+            404 -> "Servicio no encontrado"
+            500 -> "Error interno del servidor"
+            503 -> "Servicio no disponible"
+            else -> "Error de conexión (Código: $codigoError)"
+        }
+        mostrarMensaje(mensaje)
+    }
+
+    /**
+     * Maneja errores de red
+     */
+    private fun manejarErrorRed(error: IOException) {
+        val mensaje = when {
+            error.message?.contains("timeout") == true -> "Tiempo de espera agotado"
+            error.message?.contains("network") == true -> "Sin conexión a internet"
+            else -> "Error de conexión. Verifica tu internet"
+        }
+        mostrarMensaje(mensaje)
+    }
+
+    /**
+     * Maneja errores desconocidos
+     */
+    private fun manejarErrorDesconocido(error: Exception) {
+        mostrarMensaje("Error inesperado: ${error.message}")
+        error.printStackTrace() // Log para debugging
+    }
+
+    /**
+     * Valida que los campos obligatorios estén llenos
      */
     private fun validarCampos(usuario: String, contrasena: String): Boolean {
         var esValido = true
 
-        // Si el usuario está vacío, muestra error en EditText y marca no válido
+        // Limpiar errores previos
+        etNombreUsuario.error = null
+        etContrasena.error = null
+
+        // Validar campo usuario
         if (usuario.isEmpty()) {
-            etNombreUsuario.error = getString(R.string.error_usuario_vacio)
+            etNombreUsuario.error = "Ingresa tu nombre de usuario"
             esValido = false
-        } else {
-            etNombreUsuario.error = null // Limpia error si está correcto
         }
 
-        // Igual para contraseña: si está vacía muestra error
+        // Validar campo contraseña
         if (contrasena.isEmpty()) {
-            etContrasena.error = getString(R.string.error_contrasena_vacia)
+            etContrasena.error = "Ingresa tu contraseña"
             esValido = false
-        } else {
-            etContrasena.error = null
         }
 
         return esValido
     }
 
     /**
-     * Simula la validación de credenciales
-     * En producción se usaría llamada a API o base de datos para validar usuario y contraseña
-     * Aquí solo verifica que usuario sea "admin" y contraseña "123456"
+     * Cambia el estado visual de carga
      */
-    private fun validarCredenciales(usuario: String, contrasena: String): Boolean {
-        return usuario == "admin" && contrasena == "123456"
+    private fun cambiarEstadoCarga(cargando: Boolean) {
+        btnIniciarSesion.isEnabled = !cargando
+        btnIniciarSesion.text = if (cargando) "Iniciando sesión..." else "Iniciar sesión"
+
+        // Opcional: Cambiar cursor de campos
+        etNombreUsuario.isEnabled = !cargando
+        etContrasena.isEnabled = !cargando
+    }
+
+    /**
+     * Muestra un mensaje Toast al usuario
+     */
+    private fun mostrarMensaje(mensaje: String) {
+        Toast.makeText(requireContext(), mensaje, Toast.LENGTH_SHORT).show()
+    }
+
+    /**
+     * Navega a la pantalla principal
+     */
+    private fun navegarAPrincipal() {
+        try {
+            findNavController().navigate(R.id.action_login_to_lista_productos)
+        } catch (e: Exception) {
+            // Handle navigation error
+            mostrarMensaje("Error al navegar. Intenta nuevamente.")
+        }
     }
 }
