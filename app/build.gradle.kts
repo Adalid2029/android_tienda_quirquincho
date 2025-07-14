@@ -63,5 +63,6 @@ dependencies {
 
     // DataStore para almacenamiento seguro del token
     implementation("androidx.datastore:datastore-preferences:1.0.0")
+    implementation("com.github.bumptech.glide:glide:4.16.0")
 
 }

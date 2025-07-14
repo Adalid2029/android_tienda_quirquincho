@@ -11,9 +11,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:orientation="horizontal"
         android:elevation="2dp"
         android:gravity="center_vertical"
+        android:orientation="horizontal"
         android:paddingHorizontal="16dp">
 
         <TextView
@@ -23,17 +23,17 @@
             android:layout_weight="1"
             android:text="Tienda Quirquincho"
             android:textSize="20sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <ImageView
             android:id="@+id/iv_carrito"
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:src="@drawable/ic_shopping_cart"
-            android:contentDescription="Carrito de compras"
-            android:padding="4dp"
             android:clickable="true"
-            android:focusable="true" />
+            android:contentDescription="Carrito de compras"
+            android:focusable="true"
+            android:padding="4dp"
+            android:src="@drawable/ic_shopping_cart" />
 
     </LinearLayout>
 
@@ -41,9 +41,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="60dp"
         android:orientation="vertical"
-        android:padding="16dp"
-        android:layout_marginBottom="60dp">
+        android:padding="16dp">
 
         <!-- Barra de búsqueda -->
         <androidx.cardview.widget.CardView
@@ -56,16 +56,16 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
                 android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:paddingHorizontal="16dp">
 
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@drawable/ic_search"
                     android:layout_marginEnd="12dp"
-                    android:contentDescription="Buscar" />
+                    android:contentDescription="Buscar"
+                    android:src="@drawable/ic_search" />
 
                 <EditText
                     android:id="@+id/et_buscar_productos"
@@ -74,8 +74,8 @@
                     android:layout_weight="1"
                     android:hint="Buscar productos"
                     android:inputType="text"
-                    android:textSize="14sp"
-                    android:maxLines="1" />
+                    android:maxLines="1"
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
@@ -86,9 +86,9 @@
             android:id="@+id/btn_anadir_nuevo_producto"
             android:layout_width="match_parent"
             android:layout_height="48dp"
+            android:layout_marginBottom="16dp"
             android:text="Añadir nuevo producto"
             android:textColor="@android:color/white"
-            android:layout_marginBottom="16dp"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -101,4 +101,11 @@
             tools:listitem="@layout/item_producto" />
     </LinearLayout>
 
+    <ProgressBar
+        android:id="@+id/pb_cargando_mas"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:visibility="gone" />
 </LinearLayout>

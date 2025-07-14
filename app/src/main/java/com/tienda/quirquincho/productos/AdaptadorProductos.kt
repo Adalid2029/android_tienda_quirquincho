@@ -9,6 +9,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tienda.quirquincho.R
 import com.tienda.quirquincho.productos.modelos.Producto
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 
 class AdaptadorProductos(
     private val listaProductos: List<Producto>,
@@ -43,12 +45,23 @@ class AdaptadorProductos(
         val producto = listaProductos[position]
 
         // Asignar datos a las vistas
-        holder.tvCategoria.text = "Categoría: ${producto.categoria}"
         holder.tvNombreProducto.text = producto.nombre
-        holder.tvPrecio.text = "Precio: ${producto.precio} Bs"
+        holder.tvCategoria.text = "Categoría: ${producto.categoria}"
+        holder.tvPrecio.text = "Precio: ${String.format("%.2f", producto.precio)} Bs"
 
-        // TODO: Cargar imagen real cuando tengamos URLs
-        holder.ivImagenProducto.setImageResource(R.drawable.ic_launcher_background)
+        // Cargar imagen real usando Glide
+        if (!producto.imagenUrl.isNullOrEmpty()) {
+            Glide.with(holder.itemView.context)
+                .load(producto.imagenUrl)
+                .placeholder(R.drawable.ic_placeholder_product) // Imagen mientras carga
+                .error(R.drawable.ic_launcher_background) // Imagen si falla la carga
+                .transition(DrawableTransitionOptions.withCrossFade()) // Animación suave
+                .centerCrop()
+                .into(holder.ivImagenProducto)
+        } else {
+            // Si no hay URL, mostrar placeholder
+            holder.ivImagenProducto.setImageResource(R.drawable.ic_placeholder_product)
+        }
 
         // Configurar click en todo el item
         holder.itemView.setOnClickListener {

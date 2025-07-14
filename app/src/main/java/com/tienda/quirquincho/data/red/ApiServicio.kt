@@ -2,12 +2,14 @@ package com.tienda.quirquincho.data.red
 
 import com.tienda.quirquincho.data.modelos.DatosLogin
 import com.tienda.quirquincho.data.modelos.RespuestaApi
+import com.tienda.quirquincho.data.modelos.RespuestaProductos
 import com.tienda.quirquincho.data.modelos.SolicitudLogin
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Query
 
 /**
  * Interfaz que define todos los endpoints de la API
@@ -34,7 +36,11 @@ interface ApiServicio {
     // === PRODUCTOS ===
 
     @GET("productos")
-    suspend fun obtenerProductos(): Response<RespuestaApi<Any>>
+    suspend fun obtenerProductos(
+        @Query("pagina") pagina: Int? = 1,
+        @Query("limite") limite: Int? = 10,
+        @Query("busqueda") busqueda: String? = null,
+    ): Response<RespuestaProductos>
 
     @POST("productos")
     suspend fun crearProducto(

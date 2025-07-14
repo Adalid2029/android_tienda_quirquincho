@@ -47,7 +47,7 @@
             android:hint="Ingresa tu nombre de usuario"
             android:inputType="text"
             android:padding="16dp"
-            android:text="admin"
+            android:text="adalidalanoca2029@gmail.com"
             android:textSize="16sp" />
 
         <!-- Campo Contraseña -->
@@ -68,7 +68,7 @@
             android:inputType="textPassword"
             android:padding="16dp"
             android:textSize="16sp"
-            android:text="123456"/>
+            android:text="Qwerty55"/>
 
         <!-- Recuperar contraseña -->
         <TextView
