@@ -8,6 +8,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.first
 
 /**
  * Manager para almacenar y recuperar el token JWT de forma segura
@@ -44,7 +45,7 @@ class TokenManager(private val context: Context) {
         expiraEn: String
     ) {
         context.dataStore.edit { preferences ->
-            preferences[KEY_TOKEN] = "Bearer $token" // Agregar Bearer prefix
+            preferences[KEY_TOKEN] = token
             preferences[KEY_USUARIO_ID] = usuarioId
             preferences[KEY_NOMBRE_USUARIO] = nombreUsuario
             preferences[KEY_EMAIL] = email
@@ -59,6 +60,23 @@ class TokenManager(private val context: Context) {
     fun obtenerToken(): Flow<String?> {
         return context.dataStore.data.map { preferences ->
             preferences[KEY_TOKEN]
+        }
+    }
+
+    /*
+     * Obtiene el token JWT almacenado de forma síncrona
+     */
+    suspend fun obtenerTokenSincrono(): String? {
+        val token = context.dataStore.data.map { preferences ->
+            preferences[KEY_TOKEN]
+        }.first()
+
+        return if (token?.startsWith("Bearer ") == true) {
+            token
+        } else if (token != null) {
+            "Bearer $token"
+        } else {
+            null
         }
     }
 

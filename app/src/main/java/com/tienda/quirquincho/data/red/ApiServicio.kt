@@ -2,14 +2,20 @@ package com.tienda.quirquincho.data.red
 
 import com.tienda.quirquincho.data.modelos.DatosLogin
 import com.tienda.quirquincho.data.modelos.RespuestaApi
+import com.tienda.quirquincho.data.modelos.RespuestaCrearProducto
 import com.tienda.quirquincho.data.modelos.RespuestaProductos
+import com.tienda.quirquincho.data.modelos.SolicitudCrearProducto
 import com.tienda.quirquincho.data.modelos.SolicitudLogin
+import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Query
+import retrofit2.http.Path
 
 /**
  * Interfaz que define todos los endpoints de la API
@@ -45,21 +51,14 @@ interface ApiServicio {
     @POST("productos")
     suspend fun crearProducto(
         @Header("Authorization") token: String,
-        @Body producto: Any
-    ): Response<RespuestaApi<Any>>
+        @Body producto: SolicitudCrearProducto
+    ): Response<RespuestaCrearProducto>
 
-    // === CARRITO ===
-
-    @GET("carrito")
-    suspend fun obtenerCarrito(
-        @Header("Authorization") token: String
-    ): Response<RespuestaApi<Any>>
-
-    @POST("carrito/agregar")
-    suspend fun agregarAlCarrito(
+    @Multipart
+    @POST("productos/{id}/imagen")
+    suspend fun subirImagenProducto(
+        @Path("id") idProducto: String,
         @Header("Authorization") token: String,
-        @Body item: Any
+        @Part imagen: MultipartBody.Part
     ): Response<RespuestaApi<Any>>
-
-    // Más endpoints se agregarán según necesidad...
 }
