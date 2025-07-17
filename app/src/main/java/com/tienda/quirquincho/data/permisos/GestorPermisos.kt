@@ -48,4 +48,41 @@ class GestorPermisos(private val activity: Activity) {
             )
         }
     }
+
+
+    /**
+    * Verifica y solicita permisos para cámara y almacenamiento
+    */
+    fun verificarYSolicitarPermisosCamara(callback: (Boolean) -> Unit) {
+        val permisosNecesarios = mutableListOf<String>()
+
+        // Permiso de cámara
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            permisosNecesarios.add(Manifest.permission.CAMERA)
+        }
+
+        // Permiso de almacenamiento (para guardar la foto)
+        val permisoAlmacenamiento = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
+                Manifest.permission.READ_MEDIA_IMAGES
+            }
+            else -> {
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            }
+        }
+
+        if (ContextCompat.checkSelfPermission(activity, permisoAlmacenamiento) != PackageManager.PERMISSION_GRANTED) {
+            permisosNecesarios.add(permisoAlmacenamiento)
+        }
+
+        if (permisosNecesarios.isEmpty()) {
+            callback(true)
+        } else {
+            ActivityCompat.requestPermissions(
+                activity,
+                permisosNecesarios.toTypedArray(),
+                CODIGO_PERMISO_CAMARA
+            )
+        }
+    }
 }

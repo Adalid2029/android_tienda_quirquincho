@@ -22,6 +22,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
+import com.tienda.quirquincho.utilidades.SelectorFuenteImagen
 
 class AnadirProductoFragment : Fragment() {
 
@@ -43,6 +44,8 @@ class AnadirProductoFragment : Fragment() {
     // Gestores
     private lateinit var gestorPermisos: GestorPermisos
     private lateinit var selectorImagen: SelectorImagen
+    private lateinit var selectorFuenteImagen: SelectorFuenteImagen
+
     private lateinit var tokenManager: TokenManager
 
     // Variables de estado
@@ -75,7 +78,50 @@ class AnadirProductoFragment : Fragment() {
         tokenManager = TokenManager(requireContext())
         selectorImagen = SelectorImagen(this) { uri ->
             imagenSeleccionada = uri
-            ivImagenProducto.setImageURI(uri)
+            if (uri != null) {
+                ivImagenProducto.setImageURI(uri)
+                android.util.Log.d("AnadirProducto", "Imagen seleccionada: $uri")
+            } else {
+                android.util.Log.d("AnadirProducto", "No se seleccionó imagen")
+                Toast.makeText(
+                    requireContext(),
+                    "No se seleccionó imagen",
+                    Toast.LENGTH_SHORT
+                ).show()
+
+            }
+
+        }
+        selectorFuenteImagen = SelectorFuenteImagen(this) { tipoFuente ->
+            when (tipoFuente) {
+                SelectorFuenteImagen.TipoFuente.GALERIA -> {
+                    gestorPermisos.verificarYSolicitarPermisoAlmacenamiento { tienePermiso ->
+                        if (tienePermiso) {
+                            selectorImagen.abrirGaleria()
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                "Permiso denegado para acceder a galería",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+
+                SelectorFuenteImagen.TipoFuente.CAMARA -> {
+                    gestorPermisos.verificarYSolicitarPermisosCamara { tienePermiso ->
+                        if (tienePermiso) {
+                            selectorImagen.abrirCamara()
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                "Permiso denegado para usar cámara",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -100,18 +146,7 @@ class AnadirProductoFragment : Fragment() {
 
         btnSeleccionarProducto.setOnClickListener {
             android.util.Log.d("AnadirProducto", "Click en seleccionar imagen")
-            gestorPermisos.verificarYSolicitarPermisoAlmacenamiento { tienePermiso ->
-                android.util.Log.d("AnadirProducto", "Resultado permiso: $tienePermiso")
-                if (tienePermiso) {
-                    selectorImagen.abrirGaleria()
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Permiso denegado para acceder a imágenes",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-            }
+            selectorFuenteImagen.mostrarOpcionesSeleccion()
         }
 
         btnAnadirProducto.setOnClickListener {
@@ -449,6 +484,18 @@ class AnadirProductoFragment : Fragment() {
                     Toast.makeText(
                         requireContext(),
                         "Permiso denegado para acceder a imágenes",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
+            GestorPermisos.CODIGO_PERMISO_CAMARA -> {
+                if (grantResults.isNotEmpty() && grantResults.all { it == PackageManager.PERMISSION_GRANTED }) {
+                    selectorImagen.abrirCamara()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "Permisos denegados para usar cámara",
                         Toast.LENGTH_SHORT
                     ).show()
                 }
