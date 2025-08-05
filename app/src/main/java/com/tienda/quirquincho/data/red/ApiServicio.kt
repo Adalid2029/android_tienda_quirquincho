@@ -1,11 +1,13 @@
 package com.tienda.quirquincho.data.red
 
 import com.tienda.quirquincho.data.modelos.DatosLogin
+import com.tienda.quirquincho.data.modelos.Registro
 import com.tienda.quirquincho.data.modelos.RespuestaApi
 import com.tienda.quirquincho.data.modelos.RespuestaCrearProducto
 import com.tienda.quirquincho.data.modelos.RespuestaProductos
 import com.tienda.quirquincho.data.modelos.SolicitudCrearProducto
 import com.tienda.quirquincho.data.modelos.SolicitudLogin
+import com.tienda.quirquincho.data.modelos.Usuario
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -61,4 +63,9 @@ interface ApiServicio {
         @Header("Authorization") token: String,
         @Part imagen: MultipartBody.Part
     ): Response<RespuestaApi<Any>>
+
+    @POST("auth/registro")
+    suspend fun registrarUsuario(
+        @Body datosRegistro : Registro
+    ):Response<RespuestaApi<Usuario>>
 }

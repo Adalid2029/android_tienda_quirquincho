@@ -45,8 +45,7 @@ class MainActivity : AppCompatActivity() {
         // Controlar visibilidad del Bottom Navigation
         navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.loginFragment -> {
-                    // Ocultar bottom navigation en login
+                R.id.loginFragment, R.id.registroFragment -> {
                     bottomNavigation.visibility = View.GONE
                     // Opcional: ocultar ActionBar también
                     // supportActionBar?.hide()

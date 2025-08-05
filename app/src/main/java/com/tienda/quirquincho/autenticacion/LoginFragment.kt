@@ -29,6 +29,7 @@ class LoginFragment : Fragment() {
     private lateinit var etContrasena: EditText
     private lateinit var btnIniciarSesion: Button
     private lateinit var tvRecuperarPassword: TextView
+    private lateinit var tvRegistrarse: TextView
 
     // Manager para el token JWT
     private lateinit var tokenManager: TokenManager
@@ -65,6 +66,7 @@ class LoginFragment : Fragment() {
         etContrasena = view.findViewById(R.id.et_contrasena)
         btnIniciarSesion = view.findViewById(R.id.btn_iniciar_sesion)
         tvRecuperarPassword = view.findViewById(R.id.tv_recuperar_password)
+        tvRegistrarse = view.findViewById(R.id.tv_registrarse)
     }
 
     /**
@@ -84,6 +86,10 @@ class LoginFragment : Fragment() {
                 Toast.LENGTH_SHORT
             ).show()
         }
+        tvRegistrarse.setOnClickListener {
+            findNavController().navigate(R.id.login_registro)
+        }
+
     }
 
     /**
@@ -191,10 +197,12 @@ class LoginFragment : Fragment() {
             respuesta == null -> {
                 mostrarMensaje("Error desconocido del servidor")
             }
+
             respuesta.tieneErrores() -> {
                 // Errores de validación
                 manejarErroresValidacion(respuesta)
             }
+
             else -> {
                 // Mensaje de error general
                 mostrarMensaje(respuesta.mensaje)
@@ -314,7 +322,7 @@ class LoginFragment : Fragment() {
      */
     private fun navegarAPrincipal() {
         try {
-            findNavController().navigate(R.id.action_login_to_lista_productos)
+            findNavController().navigate(R.id.login_registro)
         } catch (e: Exception) {
             // Handle navigation error
             mostrarMensaje("Error al navegar. Intenta nuevamente.")
